@@ -104,7 +104,7 @@ with tab1:
             label = prediction["label"]
             score = prediction["score"]
 
-            if label == "offensive" and score > 0.6:
+            if label == "offensive" and score > 0.4:
                 st.session_state["show_alert"] = True
                 st.session_state["alert_message"] = "🚨 Ce commentaire est offensant. Veuillez modifier votre contenu avant de le poster."
             else:
@@ -151,7 +151,7 @@ with tab2:
             score = prediction["score"]
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            if label == "offensive" and score > 0.6:
+            if label == "offensive" and score > 0.4:
                 messages.append(
                     ("red", f"🚨 Message offensant détecté : {user_message}", timestamp)
                 )
