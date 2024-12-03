@@ -3,10 +3,8 @@ from transformers import pipeline
 from datetime import datetime
 
 model = pipeline(
-    "text-classification",
-    model="cardiffnlp/twitter-roberta-base-offensive",
-    tokenizer="cardiffnlp/twitter-roberta-base-offensive",
-    device=-1,
+    "zero-shot-classification",
+    model="facebook/bart-large-mnli" 
 )
 
 st.set_page_config(
@@ -19,7 +17,7 @@ st.set_page_config(
 PRIMARY_COLOR = "#1E3A8A"
 SECONDARY_COLOR = "#D1D5DB"
 WHITE_COLOR = "#FFFFFF"
-BORDER_COLOR = "#B0BEC5"  
+BORDER_COLOR = "#B0BEC5"
 
 st.markdown(
     f"""
@@ -81,7 +79,7 @@ tab1, tab2 = st.tabs(["📝 Posts", "💬 Messages"])
 # ---------------------- SECTION POSTS ----------------------
 with tab1:
     st.markdown("<div class='title'>Posts</div>", unsafe_allow_html=True)
-    
+
     st.markdown("<div class='subtitle'>Post existant</div>", unsafe_allow_html=True)
     st.markdown(
         """
@@ -100,9 +98,12 @@ with tab1:
     new_comment = st.text_input("Ajoutez votre commentaire ici 👇")
     if st.button("Publier le commentaire"):
         if new_comment:
-            prediction = model(new_comment)[0]
-            label = prediction["label"]
-            score = prediction["score"]
+            labels = ["offensive", "non-offensive"]
+            prediction = model(new_comment, labels)
+            label = prediction["labels"][0]
+            score = prediction["scores"][0]
+
+            print(f"Commentaire - Label: {label}, Score: {score}")
 
             if label == "offensive" and score > 0.4:
                 st.session_state["show_alert"] = True
@@ -146,10 +147,13 @@ with tab2:
         submitted = st.form_submit_button("Envoyer")
 
         if submitted and user_message:
-            prediction = model(user_message)[0]
-            label = prediction["label"]
-            score = prediction["score"]
+            labels = ["offensive", "non-offensive"]
+            prediction = model(user_message, labels)
+            label = prediction["labels"][0]
+            score = prediction["scores"][0]
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            print(f"Message - Label: {label}, Score: {score}")
 
             if label == "offensive" and score > 0.4:
                 messages.append(
