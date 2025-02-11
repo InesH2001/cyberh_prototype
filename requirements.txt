@@ -1,5 +1,5 @@
 streamlit
 transformers
 torch
-pandas
-numpy
+speech_recognition
+pydub
