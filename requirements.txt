@@ -1,5 +1,7 @@
 streamlit
 transformers
 torch
-speech_recognition
+speechrecognition
 pydub
+datetime
+ffmpeg-python
